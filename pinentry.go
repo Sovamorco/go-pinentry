@@ -287,6 +287,23 @@ func (c *Client) Confirm(option string) (bool, error) {
 	}
 }
 
+// Message shows user a message.
+func (c *Client) Message() error {
+	command := "MESSAGE"
+	if err := c.writeLine(command); err != nil {
+		return err
+	}
+
+	switch line, err := c.readLine(); {
+	case err != nil:
+		return err
+	case isOK(line):
+		return nil
+	default:
+		return newUnexpectedResponseError(line)
+	}
+}
+
 // GetPIN gets a PIN from the user. If the user cancels, an error is returned
 // which can be tested with IsCancelled.
 func (c *Client) GetPIN() (pin string, fromCache bool, err error) {
